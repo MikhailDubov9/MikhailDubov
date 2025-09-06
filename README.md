@@ -1,2 +1,0 @@
-# MikhailDubov
-first homework

@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e102ecbb-a434-44f6-863a-2a9a0ad0544a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mipt/mikhaildubov/generics/ArrayUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mipt/mikhaildubov/generics/ArrayUtils.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -147,7 +147,7 @@ public class CustomArrayList<A> implements CustomList<A> {
      */
     @Override
     public boolean hasNext() {
-      return currentIndex < size - 1;
+      return currentIndex < size;
     }
 
     /**

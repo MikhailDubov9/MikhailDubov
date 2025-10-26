@@ -32,32 +32,32 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Application.executor": "Run",
-    "Application.ArrayUtils.executor": "Run",
-    "Application.Calculator.executor": "Run",
-    "Application.CollectionUtils.executor": "Run",
-    "Application.MainClass.executor": "Run",
-    "Application.Pair.executor": "Run",
-    "JUnit.CollectionPerformanceTester.executor": "Run",
-    "JUnit.CustomArrayListTest.executor": "Run",
-    "Maven.Unknown [compile].executor": "Run",
-    "Maven.mikhaildubov [clean].executor": "Run",
-    "Maven.mikhaildubov [install].executor": "Run",
-    "Maven.mikhaildubov [test].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/hw7",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mikha/IdeaProjects/mikhaildubov",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Application.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ArrayUtils.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Calculator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CollectionUtils.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MainClass.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Pair.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CollectionPerformanceTester.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CustomArrayListTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Unknown [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.mikhaildubov [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.mikhaildubov [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.mikhaildubov [test].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/hw7&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mikha/IdeaProjects/mikhaildubov&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

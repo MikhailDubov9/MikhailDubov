@@ -26,3 +26,7 @@ spring:
 logging:
   level:
     com.mipt.mikhaildubov.todo: ERROR
+---
+spring:
+  main:
+    allow-circular-references: true

@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+app:
+  name: "MIPT Task Manager MVP"
+  version: "1.0.0"
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+logging:
+  level:
+    com.mipt.mikhaildubov.todo: DEBUG
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+logging:
+  level:
+    com.mipt.mikhaildubov.todo: ERROR
+---
+spring:
+  main:
+    allow-circular-references: true

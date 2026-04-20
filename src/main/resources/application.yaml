@@ -4,7 +4,7 @@ server:
     session:
       cookie:
         http-only: true
-        secure: false # Для локальной разработки
+        secure: false
 
 app:
   name: "MIPT Task Manager API"

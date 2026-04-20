@@ -1,12 +1,12 @@
-package com.mipt.mikhaildubov.todo.model;
+package com.mipt.mikhaildubov.todo.dto;
+
+import com.mipt.mikhaildubov.todo.model.Priority;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-public class Task {
+public class TaskResponseDto {
   private Long id;
   private String title;
   private String description;
@@ -14,19 +14,7 @@ public class Task {
   private LocalDateTime createdAt;
   private LocalDate dueDate;
   private Priority priority;
-  private Set<String> tags = new HashSet<>();
-
-  public Task() {
-    this.createdAt = LocalDateTime.now();
-  }
-
-  public Task(Long id, String title, String description, boolean completed) {
-    this();
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.completed = completed;
-  }
+  private Set<String> tags;
 
   public Long getId() {
     return id;
@@ -90,18 +78,5 @@ public class Task {
 
   public void setTags(Set<String> tags) {
     this.tags = tags;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Task task = (Task) o;
-    return Objects.equals(id, task.id);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
   }
 }

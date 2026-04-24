@@ -2,21 +2,34 @@ package com.mipt.mikhaildubov.todo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mipt.mikhaildubov.todo.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import com.mipt.mikhaildubov.todo.service.TaskService;
+import com.mipt.mikhaildubov.todo.exception.TaskUpdateException;
 
+import java.util.List;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class TodoApplicationTests {
+
+  @Autowired
+  private TaskService taskService;
 
   @Autowired
   private MockMvc mockMvc;
@@ -81,5 +94,23 @@ class TodoApplicationTests {
     mockMvc.perform(get("/api/favorites"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  void shouldRollbackTransactionOnFailure() throws Exception {
+    MvcResult result = mockMvc.perform(post("/api/tasks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getValidTaskJson("Task For Tx")))
+        .andReturn();
+
+    Long validId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
+    Long invalidId = 99999L;
+
+    assertThrows(TaskUpdateException.class, () -> {
+      taskService.bulkCompleteTasks(Arrays.asList(validId, invalidId));
+    });
+
+    Task checkTask = taskService.getTaskById(validId).get();
+    assertFalse(checkTask.isCompleted());
   }
 }

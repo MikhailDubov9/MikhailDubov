@@ -89,3 +89,5 @@ Thumbs.db
 .env
 .env.local
 .env.production
+
+uploads/

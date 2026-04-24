@@ -13,7 +13,8 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class LoggingAspect {
-  @Around("execution(* com.mipt.mikhaildubov.todo.service.*.*(..))")
+  @Around("execution(* com.mipt.mikhaildubov.todo.service.*Service.*(..)) || " +
+      "execution(* com.mipt.mikhaildubov.todo.controller.*Controller.*(..))")
   public Object logExecution(ProceedingJoinPoint joinPoint) throws Throwable {
     System.out.println("--> Service method start: " + joinPoint.getSignature().getName() +
         " | Args: " + Arrays.toString(joinPoint.getArgs()));

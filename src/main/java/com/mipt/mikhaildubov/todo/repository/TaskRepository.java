@@ -1,19 +1,25 @@
 package com.mipt.mikhaildubov.todo.repository;
 
+import com.mipt.mikhaildubov.todo.model.Priority;
 import com.mipt.mikhaildubov.todo.model.Task;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-/**
- * Interface for task data access operations.
- */
-public interface TaskRepository {
-  List<Task> findAll();
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-  Optional<Task> findById(Long id);
+  List<Task> findByCompletedAndPriority(boolean completed, Priority priority);
 
-  Task save(Task task);
+  @Query("SELECT t FROM Task t WHERE t.dueDate BETWEEN CURRENT_DATE AND :nextWeek")
+  List<Task> findTasksDueIn7Days(@Param("nextWeek") LocalDate nextWeek);
 
-  void deleteById(Long id);
+  @EntityGraph(attributePaths = {"attachments", "tags"})
+  @Query("SELECT t FROM Task t")
+  List<Task> findAllWithAttachmentsAndTags();
 }

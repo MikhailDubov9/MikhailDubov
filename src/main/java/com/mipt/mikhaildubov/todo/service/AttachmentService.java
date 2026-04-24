@@ -1,7 +1,9 @@
 package com.mipt.mikhaildubov.todo.service;
 
+import com.mipt.mikhaildubov.todo.model.Task;
 import com.mipt.mikhaildubov.todo.model.TaskAttachment;
 import com.mipt.mikhaildubov.todo.repository.TaskAttachmentRepository;
+import com.mipt.mikhaildubov.todo.repository.TaskRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,14 @@ import java.util.UUID;
 
 @Service
 public class AttachmentService {
-  private final TaskAttachmentRepository repository;
+
+  private final TaskAttachmentRepository attachmentRepository;
+  private final TaskRepository taskRepository;
   private final Path uploadDir = Paths.get("uploads");
 
-  public AttachmentService(TaskAttachmentRepository repository) {
-    this.repository = repository;
+  public AttachmentService(TaskAttachmentRepository attachmentRepository, TaskRepository taskRepository) {
+    this.attachmentRepository = attachmentRepository;
+    this.taskRepository = taskRepository;
     try {
       Files.createDirectories(uploadDir);
     } catch (IOException e) {
@@ -32,32 +37,34 @@ public class AttachmentService {
   }
 
   public TaskAttachment storeAttachment(Long taskId, MultipartFile file) {
+    Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new RuntimeException("Task not found"));
+
     try {
       String storedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
       Path targetLocation = uploadDir.resolve(storedFileName);
-
       Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
       TaskAttachment attachment = new TaskAttachment();
-      attachment.setTaskId(taskId);
+      attachment.setTask(task); // Связываем сущности!
       attachment.setFileName(file.getOriginalFilename());
       attachment.setStoredFileName(storedFileName);
       attachment.setContentType(file.getContentType());
       attachment.setSize(file.getSize());
 
-      return repository.save(attachment);
+      return attachmentRepository.save(attachment);
     } catch (IOException ex) {
-      throw new RuntimeException("Could not store file " + file.getOriginalFilename(), ex);
+      throw new RuntimeException("Could not store file", ex);
     }
   }
 
   public TaskAttachment getAttachment(Long attachmentId) {
-    return repository.findById(attachmentId)
+    return attachmentRepository.findById(attachmentId)
         .orElseThrow(() -> new RuntimeException("Attachment not found"));
   }
 
   public List<TaskAttachment> getAttachmentsByTaskId(Long taskId) {
-    return repository.findByTaskId(taskId);
+    return attachmentRepository.findByTask_Id(taskId);
   }
 
   public Resource loadAsResource(Long attachmentId) {
@@ -68,7 +75,7 @@ public class AttachmentService {
       if (resource.exists()) {
         return resource;
       } else {
-        throw new FileNotFoundException("File not found: " + attachment.getFileName());
+        throw new FileNotFoundException("File not found");
       }
     } catch (MalformedURLException | FileNotFoundException ex) {
       throw new RuntimeException("File not found", ex);
@@ -79,7 +86,7 @@ public class AttachmentService {
     TaskAttachment attachment = getAttachment(attachmentId);
     try {
       Files.deleteIfExists(uploadDir.resolve(attachment.getStoredFileName()));
-      repository.deleteById(attachmentId);
+      attachmentRepository.deleteById(attachmentId);
     } catch (IOException ex) {
       throw new RuntimeException("Could not delete file", ex);
     }

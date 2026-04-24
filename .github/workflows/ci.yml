@@ -28,7 +28,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build and Test
-        run: ./mvnw clean verify
+        run: mvn clean verify
         env:
           DB_USER: todo_user
           DB_PASSWORD: todo_password

@@ -1,31 +1,60 @@
 package com.mipt.mikhaildubov.todo.model;
 
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "tasks")
+@EntityListeners(AuditingEntityListener.class)
 public class Task {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(nullable = false, length = 100)
   private String title;
+
+  @Column(length = 500)
   private String description;
-  private boolean completed;
-  private LocalDateTime createdAt;
-  private LocalDate dueDate;
+
+  @Column(nullable = false)
+  private boolean completed = false;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
   private Priority priority;
+
+  @Column(name = "due_date")
+  private LocalDate dueDate;
+
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "last_modified_date")
+  private LocalDateTime lastModifiedDate;
+
+  @ElementCollection(fetch = FetchType.LAZY)
+  @CollectionTable(name = "task_tags", joinColumns = @JoinColumn(name = "task_id"))
+  @Column(name = "tag", length = 50, nullable = false)
   private Set<String> tags = new HashSet<>();
 
-  public Task() {
-    this.createdAt = LocalDateTime.now();
-  }
+  @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+  private List<TaskAttachment> attachments = new ArrayList<>();
 
-  public Task(Long id, String title, String description, boolean completed) {
-    this();
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.completed = completed;
+  public Task() {
   }
 
   public Long getId() {
@@ -60,12 +89,12 @@ public class Task {
     this.completed = completed;
   }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
+  public Priority getPriority() {
+    return priority;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
+  public void setPriority(Priority priority) {
+    this.priority = priority;
   }
 
   public LocalDate getDueDate() {
@@ -76,12 +105,20 @@ public class Task {
     this.dueDate = dueDate;
   }
 
-  public Priority getPriority() {
-    return priority;
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
   }
 
-  public void setPriority(Priority priority) {
-    this.priority = priority;
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public LocalDateTime getLastModifiedDate() {
+    return lastModifiedDate;
+  }
+
+  public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    this.lastModifiedDate = lastModifiedDate;
   }
 
   public Set<String> getTags() {
@@ -90,6 +127,14 @@ public class Task {
 
   public void setTags(Set<String> tags) {
     this.tags = tags;
+  }
+
+  public List<TaskAttachment> getAttachments() {
+    return attachments;
+  }
+
+  public void setAttachments(List<TaskAttachment> attachments) {
+    this.attachments = attachments;
   }
 
   @Override

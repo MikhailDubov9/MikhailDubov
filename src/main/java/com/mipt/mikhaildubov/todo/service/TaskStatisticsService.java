@@ -1,25 +1,28 @@
 package com.mipt.mikhaildubov.todo.service;
 
-import com.mipt.mikhaildubov.todo.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.mipt.mikhaildubov.todo.dto.PriorityCountDto;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-/**
- * Service to demonstrate @Qualifier usage by injecting multiple repository implementations.
- */
+import java.util.List;
+
 @Service
 public class TaskStatisticsService {
-  private final TaskRepository primaryRepo;
-  private final TaskRepository stubRepo;
 
-  public TaskStatisticsService(TaskRepository primaryRepo,
-                               @Qualifier("stubTaskRepository") TaskRepository stubRepo) {
-    this.primaryRepo = primaryRepo;
-    this.stubRepo = stubRepo;
+  private final JdbcTemplate jdbcTemplate;
+
+  public TaskStatisticsService(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
   }
 
-  public void printComparison() {
-    System.out.println("Primary Repo count: " + primaryRepo.findAll().size());
-    System.out.println("Stub Repo count: " + stubRepo.findAll().size());
+  public List<PriorityCountDto> getTasksCountByPriority() {
+    String sql = "SELECT priority, count(*) as count FROM tasks GROUP BY priority";
+
+    return jdbcTemplate.query(sql, (rs, rowNum) ->
+        new PriorityCountDto(
+            rs.getString("priority"),
+            rs.getInt("count")
+        )
+    );
   }
 }

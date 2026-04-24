@@ -1,6 +1,5 @@
 package com.mipt.mikhaildubov.todo.config;
 
-import com.mipt.mikhaildubov.todo.repository.StubTaskRepository;
 import com.mipt.mikhaildubov.todo.repository.TaskRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

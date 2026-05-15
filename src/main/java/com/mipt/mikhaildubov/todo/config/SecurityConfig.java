@@ -2,7 +2,6 @@ package com.mipt.mikhaildubov.todo.config;
 
 import com.mipt.mikhaildubov.todo.security.JwtAuthFilter;
 import com.mipt.mikhaildubov.todo.security.RestAuthenticationEntryPoint;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -31,6 +29,11 @@ public class SecurityConfig {
 
     @Value("${app.security.password-pepper}")
     private String pepper;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, RestAuthenticationEntryPoint authenticationEntryPoint) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

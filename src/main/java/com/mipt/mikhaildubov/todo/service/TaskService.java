@@ -17,7 +17,7 @@ public class TaskService {
     private final TaskRepository repository;
     private final Map<Long, Task> taskCache = new HashMap<>();
 
-    @Value("${app.name}")
+    @Value("${app.name:TodoApp}")
     private String appName;
 
     public TaskService(TaskRepository repository) {

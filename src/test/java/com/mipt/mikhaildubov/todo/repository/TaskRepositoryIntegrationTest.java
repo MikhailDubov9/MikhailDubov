@@ -1,5 +1,6 @@
 package com.mipt.mikhaildubov.todo.repository;
 
+import com.mipt.mikhaildubov.todo.model.Priority;
 import com.mipt.mikhaildubov.todo.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class TaskRepositoryIntegrationTest {
         Task task = new Task();
         task.setTitle("Container Task");
         task.setDueDate(LocalDate.now().plusDays(3));
+        task.setPriority(Priority.MEDIUM); // <-- Добавили приоритет!
         taskRepository.save(task);
 
         List<Task> tasks = taskRepository.findTasksDueIn7Days(LocalDate.now().plusDays(7));

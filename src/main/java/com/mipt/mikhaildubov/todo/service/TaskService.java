@@ -7,6 +7,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,7 @@ public class TaskService {
         return repository.save(task);
     }
 
+    @Transactional(rollbackFor = TaskUpdateException.class, isolation = Isolation.READ_COMMITTED)
     public void bulkCompleteTasks(List<Long> ids) {
         for (Long id : ids) {
             updateTaskStatus(id, true);

@@ -1,5 +1,6 @@
 package com.mipt.mikhaildubov.todo.service;
 
+import com.mipt.mikhaildubov.todo.exception.TaskUpdateException;
 import com.mipt.mikhaildubov.todo.model.Task;
 import com.mipt.mikhaildubov.todo.repository.TaskRepository;
 import jakarta.annotation.PostConstruct;
@@ -52,7 +53,8 @@ public class TaskService {
     }
 
     public Task updateTaskStatus(Long id, boolean completed) {
-        Task task = repository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = repository.findById(id)
+                .orElseThrow(() -> new TaskUpdateException("Task not found for bulk update: " + id));
         task.setCompleted(completed);
         return repository.save(task);
     }

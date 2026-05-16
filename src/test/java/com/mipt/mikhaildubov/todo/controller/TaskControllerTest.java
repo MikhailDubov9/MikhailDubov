@@ -35,8 +35,16 @@ public class TaskControllerTest {
 
     @Test
     public void testCreateTask() throws Exception {
-        Task taskToSave = new Task(null, "New Web Task", "Desc", false);
-        Task savedTask = new Task(1L, "New Web Task", "Desc", false);
+        Task taskToSave = new Task();
+        taskToSave.setTitle("New Web Task");
+        taskToSave.setDescription("Desc");
+        taskToSave.setCompleted(false);
+
+        Task savedTask = new Task();
+        savedTask.setId(1L);
+        savedTask.setTitle("New Web Task");
+        savedTask.setDescription("Desc");
+        savedTask.setCompleted(false);
 
         when(taskService.saveTask(any(Task.class))).thenReturn(savedTask);
 
@@ -50,7 +58,12 @@ public class TaskControllerTest {
 
     @Test
     public void testGetTask() throws Exception {
-        Task existingTask = new Task(2L, "Existing Web Task", "Desc", true);
+        Task existingTask = new Task();
+        existingTask.setId(2L);
+        existingTask.setTitle("Existing Web Task");
+        existingTask.setDescription("Desc");
+        existingTask.setCompleted(true);
+
         when(taskService.getTaskById(2L)).thenReturn(Optional.of(existingTask));
 
         mockMvc.perform(get("/api/tasks/2")

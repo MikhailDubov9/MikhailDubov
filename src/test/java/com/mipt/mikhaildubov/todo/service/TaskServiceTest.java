@@ -26,7 +26,12 @@ public class TaskServiceTest {
     @Test
     public void testUpdateTaskStatus() {
         Long taskId = 1L;
-        Task existingTask = new Task(taskId, "Test Task", "Description", false);
+        Task existingTask = new Task();
+        existingTask.setId(taskId);
+        existingTask.setTitle("Test Task");
+        existingTask.setDescription("Description");
+        existingTask.setCompleted(false);
+
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
 
         taskService.updateTaskStatus(taskId, true);

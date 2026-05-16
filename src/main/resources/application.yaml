@@ -1,83 +1,32 @@
-server:
-  port: 8080
-  servlet:
-    session:
-      cookie:
-        http-only: true
-        secure: false
-
 app:
-  name: "MIPT Task Manager API"
-  version: "2.0.0"
+  security:
+    jwt-secret: "zdtl7y9X9D6S376A2B4E5G6H7J8K9L0M1N2P3Q4R5S6T7U8V9W"
+    jwt-expiration: 3600000
+    password-pepper: "mipt-todo-pepper-2026"
 
-spring:
-  profiles:
-    active: dev
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+external:
+  api:
+    base-url: "http://localhost:8080/external/v1"
+    connect-timeout: 2s
+    read-timeout: 5s
 
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-  datasource:
-    url: jdbc:postgresql://localhost:5432/todo_db
-    username: ${DB_USER:todo_user}
-    password: ${DB_PASSWORD:todo_password}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      externalApi:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  ratelimiter:
+    instances:
+      externalApi:
+        limitForPeriod: 5
+        limitRefreshPeriod: 1s
+        timeoutDuration: 500ms
 
-logging:
-  level:
-    com.mipt.mikhaildubov.todo: DEBUG
-
----
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    database-platform: org.hibernate.dialect.H2Dialect
-  flyway:
-    enabled: true
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    url: ${PROD_DB_URL}
-    username: ${PROD_DB_USER}
-    password: ${PROD_DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-  flyway:
-    enabled: true
-
-logging:
-  level:
-    com.mipt.mikhaildubov.todo: ERROR
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus

@@ -2,58 +2,46 @@ package com.mipt.mikhaildubov.todo.exception;
 
 import com.mipt.mikhaildubov.todo.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.time.Instant;
 import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(TaskNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleNotFound(TaskNotFoundException ex, HttpServletRequest request) {
-    return buildError(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), request.getRequestURI(), null);
-  }
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
-    Map<String, Object> details = new HashMap<>();
-    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-      details.put(error.getField(), error.getDefaultMessage());
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(TaskNotFoundException ex, HttpServletRequest request) {
+        return buildError(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), request.getRequestURI());
     }
-    return buildError(HttpStatus.BAD_REQUEST, "Bad Request", "Validation failed", request.getRequestURI(), details);
-  }
 
-  @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
-    return buildError(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), request.getRequestURI(), null);
-  }
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<ErrorResponse> handleExternalApi(ExternalApiException ex, HttpServletRequest request) {
+        log.error("External API error: {}", ex.getMessage());
+        return buildError(HttpStatus.BAD_GATEWAY, "Bad Gateway", ex.getMessage(), request.getRequestURI());
+    }
 
-  @ExceptionHandler(MissingServletRequestParameterException.class)
-  public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex, HttpServletRequest request) {
-    return buildError(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), request.getRequestURI(), null);
-  }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAll(Exception ex, HttpServletRequest request) {
+        log.error("Unexpected error", ex);
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "An unexpected error occurred", request.getRequestURI());
+    }
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleAll(Exception ex, HttpServletRequest request) {
-    return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "An unexpected error occurred", request.getRequestURI(), null);
-  }
-
-  private ResponseEntity<ErrorResponse> buildError(HttpStatus status, String error, String message, String path, Map<String, Object> details) {
-    ErrorResponse response = new ErrorResponse();
-    response.setStatus(status.value());
-    response.setError(error);
-    response.setMessage(message);
-    response.setPath(path);
-    response.setDetails(details);
-    return ResponseEntity.status(status).body(response);
-  }
+    private ResponseEntity<ErrorResponse> buildError(HttpStatus status, String error, String message, String path) {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(status.value());
+        response.setError(error);
+        response.setMessage(message);
+        response.setPath(path);
+        response.setTimestamp(Instant.now());
+        response.setDetails(new HashMap<>());
+        return ResponseEntity.status(status).body(response);
+    }
 }

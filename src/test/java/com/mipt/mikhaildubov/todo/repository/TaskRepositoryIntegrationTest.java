@@ -14,6 +14,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +46,8 @@ public class TaskRepositoryIntegrationTest {
         Task task = new Task();
         task.setTitle("Container Task");
         task.setDueDate(LocalDate.now().plusDays(3));
-        task.setPriority(Priority.MEDIUM); // <-- Добавили приоритет!
+        task.setPriority(Priority.MEDIUM);
+        task.setCreatedAt(LocalDateTime.now());
         taskRepository.save(task);
 
         List<Task> tasks = taskRepository.findTasksDueIn7Days(LocalDate.now().plusDays(7));
